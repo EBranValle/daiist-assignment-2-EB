@@ -34,7 +34,7 @@ GOOD_CLASSES = {"no defect", "no-defect", "no_defect", "normal", "good"}
 # Environment overrides exist only for a quick smoke run; the real run uses
 # the defaults.
 BASE_MODEL = os.environ.get("BASE_MODEL", "yolo11n.pt")
-EPOCHS = int(os.environ.get("EPOCHS", "50"))
+EPOCHS = int(os.environ.get("EPOCHS", "20"))
 IMGSZ = int(os.environ.get("IMGSZ", "640"))
 BATCH = int(os.environ.get("BATCH", "16"))
 PATIENCE = 15
