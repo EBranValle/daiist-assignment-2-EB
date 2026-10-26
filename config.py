@@ -27,7 +27,7 @@ VERSION = 1
 # Class names that mean "a sellable can". Every other class is a defect, and a
 # can with at least one defect box is a positive. Matched case-insensitively.
 # TODO: set this to the dataset's actual "good" class name(s).
-GOOD_CLASSES = {"normal", "good", "ok", "no-defect", "no_defect", "qualified", "intact"}
+GOOD_CLASSES = {"no defect", "normal", "good", "ok", "no-defect", "no_defect", "qualified", "intact"}
 
 # --- Training --------------------------------------------------------------
 # Environment overrides exist only for a quick smoke run; the real run uses
