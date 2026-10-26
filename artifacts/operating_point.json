@@ -1,0 +1,79 @@
+{
+  "model_alone": {
+    "low": 0.06,
+    "high": 0.06,
+    "cost_per_can": 0.00196,
+    "cost_per_1000": 1.96,
+    "review_share": 0.0,
+    "reviews_per_day": 0.0,
+    "reviewers_needed": 0.0,
+    "recall": 1.0,
+    "false_reject_rate": 0.005,
+    "rates": {
+      "pos": {
+        "pass": 0.0,
+        "review": 0.0,
+        "fail": 1.0
+      },
+      "neg": {
+        "pass": 0.995,
+        "review": 0.0,
+        "fail": 0.005
+      }
+    }
+  },
+  "unconstrained_band": {
+    "low": 0.06,
+    "high": 0.96,
+    "cost_per_can": 0.0016231783253842077,
+    "cost_per_1000": 1.6231783253842078,
+    "review_share": 0.02337376788553259,
+    "reviews_per_day": 2337.376788553259,
+    "reviewers_needed": 0.8115891626921037,
+    "recall": 1.0,
+    "false_reject_rate": 0.0,
+    "rates": {
+      "pos": {
+        "pass": 0.0,
+        "review": 0.9236883942766295,
+        "fail": 0.07631160572337042
+      },
+      "neg": {
+        "pass": 0.995,
+        "review": 0.005,
+        "fail": 0.0
+      }
+    }
+  },
+  "chosen": {
+    "low": 0.06,
+    "high": 0.96,
+    "cost_per_can": 0.0016231783253842077,
+    "cost_per_1000": 1.6231783253842078,
+    "review_share": 0.02337376788553259,
+    "reviews_per_day": 2337.376788553259,
+    "reviewers_needed": 0.8115891626921037,
+    "recall": 1.0,
+    "false_reject_rate": 0.0,
+    "rates": {
+      "pos": {
+        "pass": 0.0,
+        "review": 0.9236883942766295,
+        "fail": 0.07631160572337042
+      },
+      "neg": {
+        "pass": 0.995,
+        "review": 0.005,
+        "fail": 0.0
+      }
+    }
+  },
+  "do_nothing_ship_all": {
+    "cost_per_1000": 1000.0,
+    "reviewers_needed": 0.0
+  },
+  "person_checks_everything": {
+    "cost_per_1000": 69.44444444444444,
+    "reviewers_needed": 34.72222222222222
+  }
+}
