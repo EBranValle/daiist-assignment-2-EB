@@ -19,15 +19,16 @@ ARTIFACTS_DIR = ROOT / "artifacts"
 WEIGHTS_PATH = WEIGHTS_DIR / "best.pt"
 
 # --- Dataset (Roboflow Universe) -------------------------------------------
-# TODO: confirm the original owner's workspace slug and the version you use.
-WORKSPACE = "dut-u8suv"
+# https://universe.roboflow.com/canned-food-surface-defect-classification/canned-food-surface-defect/6
+# Version 6 is the full set of raw images: no "Isolate" crops, no augmented copies.
+WORKSPACE = "canned-food-surface-defect-classification"
 PROJECT = "canned-food-surface-defect"
-VERSION = 1
+VERSION = 6
 
 # Class names that mean "a sellable can". Every other class is a defect, and a
 # can with at least one defect box is a positive. Matched case-insensitively.
-# TODO: set this to the dataset's actual "good" class name(s).
-GOOD_CLASSES = {"no defect", "normal", "good", "ok", "no-defect", "no_defect", "qualified", "intact"}
+# TODO: confirm against the class names the training run prints.
+GOOD_CLASSES = {"no defect", "no-defect", "no_defect", "normal", "good"}
 
 # --- Training --------------------------------------------------------------
 # Environment overrides exist only for a quick smoke run; the real run uses
