@@ -1,0 +1,12 @@
+{
+  "base_model": "yolo11n.pt",
+  "epochs_requested": 20,
+  "epochs_run": 20,
+  "imgsz": 640,
+  "batch": 16,
+  "patience": 15,
+  "seed": 0,
+  "device": "Tesla T4",
+  "platform": "Google Colab (Python 3.13, torch 2.11.0+cu130, ultralytics 8.4.190)",
+  "minutes": 134.0
+}

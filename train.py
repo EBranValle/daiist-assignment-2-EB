@@ -13,7 +13,9 @@ Start to finish, with no manual steps:
 6. Save everything app.py needs to artifacts/, so the app never trains.
 """
 
+import gc
 import json
+import os
 import platform
 import shutil
 import time
@@ -192,8 +194,26 @@ def finetune(data_yaml: Path) -> tuple[Path, dict]:
         "platform": platform.platform(),
         "minutes": round((time.time() - started) / 60, 1),
     }
+    # Saved now, so a crash later in the pipeline does not lose it.
+    (config.ARTIFACTS_DIR / "train_info.json").write_text(json.dumps(info, indent=2))
     print(f"\nSaved best weights to {config.WEIGHTS_PATH.relative_to(config.ROOT)}")
+    # Free the trainer and its dataloaders before evaluation needs the RAM.
+    del model
+    gc.collect()
+    torch.cuda.empty_cache()
     return config.WEIGHTS_PATH, info
+
+
+def reuse_weights() -> tuple[Path, dict]:
+    """Skip training and evaluate the weights already in weights/."""
+    if not config.WEIGHTS_PATH.exists():
+        raise SystemExit(f"REUSE_WEIGHTS is set but {config.WEIGHTS_PATH} does not exist.")
+    info_path = config.ARTIFACTS_DIR / "train_info.json"
+    if not info_path.exists():
+        raise SystemExit(f"REUSE_WEIGHTS is set but {info_path} does not exist.")
+    print(f"REUSE_WEIGHTS set: evaluating {config.WEIGHTS_PATH.relative_to(config.ROOT)} "
+          f"without retraining.")
+    return config.WEIGHTS_PATH, json.loads(info_path.read_text())
 
 
 # --- 4. Evaluate -----------------------------------------------------------
@@ -231,9 +251,9 @@ def evaluate_detection(weights: Path, data_yaml: Path, names: list[str]) -> dict
 def score_images(model: YOLO, images: list[Path], class_ids: list[int] | None) -> np.ndarray:
     """Highest confidence of any box of `class_ids` per image (0 if none)."""
     scores = []
-    for result in model.predict(
-        [str(p) for p in images], conf=0.01, imgsz=config.IMGSZ, stream=True, verbose=False
-    ):
+    for image in images:
+        # One image at a time keeps memory flat on large test splits.
+        result = model.predict(str(image), conf=0.01, imgsz=config.IMGSZ, verbose=False)[0]
         conf = result.boxes.conf.cpu().numpy()
         cls = result.boxes.cls.cpu().numpy().astype(int)
         if class_ids is not None:
@@ -333,7 +353,12 @@ def main() -> None:
     stats = describe_dataset(dataset, names, defect_ids)
     (config.ARTIFACTS_DIR / "dataset_stats.json").write_text(json.dumps(stats, indent=2))
 
-    weights, train_info = finetune(data_yaml)
+    # REUSE_WEIGHTS=1 re-runs evaluation and costing on the committed weights,
+    # e.g. after changing a cost in config.py. The default trains from scratch.
+    if os.environ.get("REUSE_WEIGHTS") == "1":
+        weights, train_info = reuse_weights()
+    else:
+        weights, train_info = finetune(data_yaml)
     detection = evaluate_detection(weights, data_yaml, names)
 
     test_images = split_images(dataset, "test")

@@ -1,0 +1,92 @@
+{
+  "names": [
+    "Critical Defect",
+    "Major Defect",
+    "Minor Defect",
+    "No defect"
+  ],
+  "defect_classes": [
+    "Critical Defect",
+    "Major Defect",
+    "Minor Defect"
+  ],
+  "splits": {
+    "train": {
+      "images": 5658,
+      "defective_images": 4294,
+      "images_without_labels": 0,
+      "instances": {
+        "Critical Defect": 1406,
+        "Major Defect": 1358,
+        "Minor Defect": 1530,
+        "No defect": 1364
+      },
+      "images_containing": {
+        "Critical Defect": 1406,
+        "Major Defect": 1358,
+        "Minor Defect": 1530,
+        "No defect": 1364
+      }
+    },
+    "valid": {
+      "images": 1609,
+      "defective_images": 1223,
+      "images_without_labels": 0,
+      "instances": {
+        "Critical Defect": 401,
+        "Major Defect": 385,
+        "Minor Defect": 437,
+        "No defect": 386
+      },
+      "images_containing": {
+        "Critical Defect": 401,
+        "Major Defect": 385,
+        "Minor Defect": 437,
+        "No defect": 386
+      }
+    },
+    "test": {
+      "images": 829,
+      "defective_images": 629,
+      "images_without_labels": 1,
+      "instances": {
+        "Critical Defect": 202,
+        "Major Defect": 200,
+        "Minor Defect": 227,
+        "No defect": 199
+      },
+      "images_containing": {
+        "Critical Defect": 202,
+        "Major Defect": 200,
+        "Minor Defect": 227,
+        "No defect": 199
+      }
+    }
+  },
+  "object_area_share": {
+    "Critical Defect": {
+      "count": 2009,
+      "p10": 0.04631469974078342,
+      "median": 0.21646893633996805,
+      "p90": 0.45018496020839266
+    },
+    "Major Defect": {
+      "count": 1943,
+      "p10": 0.02800516707723672,
+      "median": 0.10572853275512858,
+      "p90": 0.456141092366317
+    },
+    "Minor Defect": {
+      "count": 2194,
+      "p10": 0.058383915297860176,
+      "median": 0.1856749058786323,
+      "p90": 0.4147407474366805
+    },
+    "No defect": {
+      "count": 1949,
+      "p10": 0.07685205159430027,
+      "median": 0.14710547542062094,
+      "p90": 0.3208002061615542
+    }
+  }
+}
