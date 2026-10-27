@@ -7,10 +7,10 @@
 
 ## Business problem, and the cost of being wrong
 
-**Decision.** A canning line packing a premium preserved product (gourmet
-tinned fish, about €15 retail per can) photographs every can after sealing. For
+**Decision.** A canning factory packing a premium preserved product (gourmet
+tinned fish, about €15 retail per can) photographs every can after sealing them. For
 each can the system decides: **ship it, reject it, or send it to a quality
-inspector**. Today that decision is made by people looking at the cans.
+inspector**. Today that decision is made by people looking at the cans. But this process could be made more efficient. 
 
 **Who acts on it.** The reject gate on the line acts on "fail"; a quality
 inspector at the end of the line handles "review".
