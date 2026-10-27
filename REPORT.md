@@ -202,9 +202,8 @@ instead of rejecting it. Meanwhile 92% of defective cans fall inside the band,
 so most of the inspector's time goes on confirming defects the model already
 found.
 
-✍️ *Is ~1 inspector realistic for this line? Is a band whose upper edge is set
-by a single test image something you would ship as-is, or would you widen or
-re-check it on more data? Compare the four designs in your own words.*
+One inspector is realistic since the review would take 6.5 hours a day. It would be good to not ship the band as it is because its upper edge depends on just one test image so its better to check it on more data first. Doing nothing is the worst option because every defect would ship increasing costs exponentially. The model alones is more cheaper but it can still reject some good cans, and checking it all by hand costs the sames as needing aroung 35 people. the model plus a small human revies is the cheapest options and the best choice. 
+
 
 ## Limitations & next steps
 
