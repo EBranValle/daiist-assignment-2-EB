@@ -31,9 +31,7 @@ for each kind of can. Shipping a defective can instead of rejecting it costs
 €50 − €7.5 = **€42.5** more; rejecting a good can instead of shipping it costs
 **€15** more. A miss is therefore about **2.8× worse** than a false alarm.
 
-✍️ *Explain in your own words why a shipped defect is worse than a wasted good
-can for this business, and how that should push the threshold (lower = reject
-on weaker evidence).*
+In the hypothetical case, shipping a defect would cost the company significantly more, since it could incur penalties and shipping and return shipping costs. This is considerably less expensive than a wasted good, since only the hypothetical cost of production would be less than the costs mentioned before. For this reason, even if a defect is considered minor, it should be rejected to avoid the 50 euros cost and to align with the company's hypothetical premium can and reputational standards. Because a miss costs more than a false alarm, the model should reject cans on weak evidence, meaning a low confidence threshold.
 
 ## Dataset
 
@@ -50,10 +48,6 @@ on weaker evidence).*
   5 is ~3× augmented copies of the same images.
  - **Why the Dataset **
    The dataset has a large amount of available images (8,096 images with 829 in the test split and 200 per class) to create a solution to the problem above. With the dataset, the model is able to grade the severity of damage and good cans for the hypothetical business case of a premium canned food manufacturing plant. However, it differs from a real manufacturing plant as the images are on a dark background and the cans are all standardized, instead of being, for example, on a conveyor belt. 
-   
-✍️ *Why does this dataset actually serve the problem above? (It grades
-severity and includes good cans, so false rejects can be counted.) And where
-does it only resemble it?*
 
 ## What the dataset's composition implies
 
