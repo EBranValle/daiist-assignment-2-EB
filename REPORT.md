@@ -168,12 +168,8 @@ far more than €50. Raising the miss cost only lowers the best threshold, and
 0.06 is already the lowest threshold that catches every test defect, so pricing
 Critical higher would not change this operating point on this test split.
 
-✍️ *Your operating point and the assumption that would most change it. The
-table gives you the sentence: "if a shipped defect cost less than about €25
-(or €50 when defects are very rare), the best threshold jumps from 0.06 to 0.96
-and the line should let borderline cans ship". Also note that at 0.06 the miss
-cost is multiplied by zero misses, which is why €50 vs €100 does not move the
-numbers.*
+The operating point is a threshold of 0,06 whic catches every defective can and rejects only 0.5% of the good cans for an expected cost of €223.50 per 1,000 cans The assumption that would change this the most is the cost of a missed defect, r an expected cost of €223.50 per 1,000 cans. This rests on the assumption that a shipped defect costs €50. If that cost were actually below about €25 (or below €50 when defects are very rare), the best threshold would jump to 0.96, and it would be cheaper to let borderline cans ship. A higher cost, such as €100, would change nothing, because at 0.06 the model misses no defects at all.
+
 
 ## What a person still has to check
 
