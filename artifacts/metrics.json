@@ -1,0 +1,141 @@
+{
+  "dataset": {
+    "workspace": "canned-food-surface-defect-classification",
+    "project": "canned-food-surface-defect",
+    "version": 6
+  },
+  "names": [
+    "Critical Defect",
+    "Major Defect",
+    "Minor Defect",
+    "No defect"
+  ],
+  "positive_classes": [
+    "Critical Defect",
+    "Major Defect",
+    "Minor Defect"
+  ],
+  "test_images": 829,
+  "test_defective": 629,
+  "train": {
+    "base_model": "yolo11n.pt",
+    "epochs_requested": 20,
+    "epochs_run": 20,
+    "imgsz": 640,
+    "batch": 16,
+    "patience": 15,
+    "seed": 0,
+    "device": "Tesla T4",
+    "platform": "Google Colab (Python 3.13, torch 2.11.0+cu130, ultralytics 8.4.190)",
+    "minutes": 134.0
+  },
+  "detection": {
+    "map50": 0.9608709854102859,
+    "map50_95": 0.9025500009975882,
+    "per_class": [
+      {
+        "class": "Critical Defect",
+        "precision": 0.9713594739815261,
+        "recall": 1.0,
+        "ap50": 0.9898101928028546,
+        "ap50_95": 0.9460736234084566
+      },
+      {
+        "class": "Major Defect",
+        "precision": 0.9475195401447747,
+        "recall": 0.9930148258882556,
+        "ap50": 0.9934077846284352,
+        "ap50_95": 0.9671315258767261
+      },
+      {
+        "class": "Minor Defect",
+        "precision": 0.9308042503623396,
+        "recall": 0.947136563876652,
+        "ap50": 0.9862326042620702,
+        "ap50_95": 0.9506201080410509
+      },
+      {
+        "class": "No defect",
+        "precision": 0.9520336409676157,
+        "recall": 0.7336683417085427,
+        "ap50": 0.8740333599477834,
+        "ap50_95": 0.7463747466641191
+      }
+    ],
+    "confusion_matrix": {
+      "labels": [
+        "Critical Defect",
+        "Major Defect",
+        "Minor Defect",
+        "No defect",
+        "background"
+      ],
+      "matrix": [
+        [
+          202,
+          1,
+          2,
+          0,
+          143
+        ],
+        [
+          0,
+          198,
+          7,
+          0,
+          134
+        ],
+        [
+          0,
+          1,
+          218,
+          0,
+          667
+        ],
+        [
+          0,
+          0,
+          0,
+          199,
+          1877
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    }
+  },
+  "baselines": {
+    "finetuned": {
+      "map50": 0.9608709854102859,
+      "map50_95": 0.9025500009975882,
+      "auc": 0.9960731319554849,
+      "recall_at_0.5": 0.9825119236883942,
+      "precision_at_0.5": 0.9983844911147012,
+      "best_threshold": 0.06,
+      "best_cost_per_1000": 223.49999999999997
+    },
+    "coco_zero_shot": {
+      "map50": 0.0,
+      "map50_95": 0.0,
+      "auc": 0.5494753577106518,
+      "recall_at_0.5": 0.848966613672496,
+      "precision_at_0.5": 0.7661406025824964,
+      "best_threshold": 0.94,
+      "best_cost_per_1000": 971.6216216216217
+    },
+    "predict_nothing": {
+      "map50": 0.0,
+      "map50_95": 0.0,
+      "auc": 0.5,
+      "recall_at_0.5": 0.0,
+      "precision_at_0.5": null,
+      "best_threshold": 0.01,
+      "best_cost_per_1000": 1000.0
+    }
+  }
+}
