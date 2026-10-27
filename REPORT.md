@@ -130,7 +130,7 @@ The gap is large and expected. The COCO model was never trained on defects, so i
 - Fed random noise, the model reports a *Major Defect* at 0.79: it never says
   "this is not a can".
 
-The headline number comes from the defect clses wich all score very high, with Critical Defect being the strongest. the model catches every critical can. "No defect" is the weak class so the model often misses or poorly places the box for a good can, but this dosent really matter. Most mistaked between classes are from over grading, Minor was called Major 7 times and Critical 2 times, and Major was called Critical once. There was only one under-grade (Major called Minor). No defective can is ever predicted as “No defect,” so a severity mistake can change how a can is classified but never lets a defective can ship.
+The headline number comes from the defect classes, which all score very high, with Critical Defect being the strongest. The model catches every critical can. "No defect" is the weak class so the model often misses or poorly places the box for a good can, but this doesn't really matter as we are focusing on the cans that have defects. Most mistakes between classes are from over grading, Minor was called Major 7 times and Critical 2 times, and Major was called Critical once. There was only one under-grade (Major called Minor). No defective can is ever predicted as “No defect,” so a severity mistake can change how a can is classified but never lets a defective can ship.
 
 ## Cost matrix and operating point
 
@@ -168,7 +168,7 @@ far more than €50. Raising the miss cost only lowers the best threshold, and
 0.06 is already the lowest threshold that catches every test defect, so pricing
 Critical higher would not change this operating point on this test split.
 
-The operating point is a threshold of 0,06 whic catches every defective can and rejects only 0.5% of the good cans for an expected cost of €223.50 per 1,000 cans The assumption that would change this the most is the cost of a missed defect, r an expected cost of €223.50 per 1,000 cans. This rests on the assumption that a shipped defect costs €50. If that cost were actually below about €25 (or below €50 when defects are very rare), the best threshold would jump to 0.96, and it would be cheaper to let borderline cans ship. A higher cost, such as €100, would change nothing, because at 0.06 the model misses no defects at all.
+The operating point is a threshold of 0,06 whic catches every defective can and rejects only 0.5% of the good cans for an expected cost of €223.50 per 1,000 cans. The assumption that would change this the most is the cost of a missed defect. This rests on the assumption that a shipped defect costs €50. If that cost were actually below about €25 (or below €50 when defects are very rare), the best threshold would jump to 0.96, and it would be cheaper to let borderline cans ship. A higher cost, such as €100, would change nothing, because at 0.06 the model misses no defects at all.
 
 
 ## What a person still has to check
@@ -202,7 +202,7 @@ instead of rejecting it. Meanwhile 92% of defective cans fall inside the band,
 so most of the inspector's time goes on confirming defects the model already
 found.
 
-One inspector is realistic since the review would take 6.5 hours a day. It would be good not to ship the band as it is because its upper edge depends on just one test image, so its better to check it on more data first. Doing nothing is the worst option because every defect would ship, increasing costs exponentially. The model alone is cheaper, but it can still reject some good cans, and checking it all by hand costs the same as needing around 35 people. The model plus a small human review is the cheapest option and the best choice. 
+One inspector is realistic since the review would take 6.5 hours a day. It would be good not to ship the band as it is because its upper edge depends on just one test image, so its better to check it on more data first. Doing nothing is the worst option because every defect would ship. The model alone is not cheaper, but it can still reject some good cans. But checking it all by hand costs the same as needing around 35 people but we only have 2, so the differnce is not big when comparing costs. The model plus a small human review is the cheapest option and the best choice. 
 
 
 ## Limitations & next steps
@@ -214,7 +214,7 @@ One inspector is realistic since the review would take 6.5 hours a day. It would
 - The band's upper edge (0.96) is set by one image.
 - One miss cost for all severities.
 - The model has no "not a can" answer for unusual input in case something would get into the production line.
-- Training stopped at 20 epochs while validation mAP was still rising. Training was also slow as it took alsmost 3 hours to run.
+- Training stopped at 20 epochs while validation mAP was still rising. Training was also slow as it took almost 2 hours to run.
 - Computational power would have to be taken into account if the model is to be implemented since GPUs are expensive. 
 
 ## Generative AI use disclosure
