@@ -41,6 +41,7 @@ PATIENCE = 15
 SEED = 0
 
 # --- Cost matrix, in euros per can -----------------------------------------
+# The line packs a premium preserved product (gourmet tinned fish), ~€15 retail.
 COST_FP = 15.0   # good can rejected: the sale price the can would have earned
 COST_FN = 50.0   # defective can shipped: penalty, shipping, return and handling
 COST_TP = 7.5    # defective can rejected: the cost of producing it
