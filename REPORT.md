@@ -1,8 +1,8 @@
 # Assignment 2 Report
 
-*Delete this italic guidance as you fill in each section. You'll be asked to
-defend any of this without your code in front of you. Write only what you
-can actually explain.*
+> **✍️ = write this part in your own words.** Everything else is facts and
+> numbers taken from the pipeline's outputs in `artifacts/`. Delete these
+> markers before submitting.
 
 - **Name**:
 - **Student ID**:
@@ -11,59 +11,246 @@ can actually explain.*
 
 ## Business problem, and the cost of being wrong
 
-*The decision this model supports, who or what acts on it, and what happens
-when it's wrong in each direction. Be concrete about the asymmetry: which
-mistake is worse, roughly by how much, and why. Everything downstream (your
-threshold, how much you send to a person, which metric you care about) has to trace
-back to this section.*
+**Decision.** A canning line packing a premium preserved product (gourmet
+tinned fish, about €15 retail per can) photographs every can after sealing. For
+each can the system decides: **ship it, reject it, or send it to a quality
+inspector**. Today that decision is made by people looking at the cans.
+
+**Who acts on it.** The reject gate on the line acts on "fail"; a quality
+inspector at the end of the line handles "review".
+
+**Positive class.** A *defective* can: any can labelled Critical, Major **or
+Minor** defect. Minor (cosmetic) defects are rejected too, because the product
+is premium and food-grade safety is not something the line can take lightly.
+
+**Cost of each outcome (€ per can):**
+
+| | Shipped | Rejected |
+|---|---|---|
+| **Defective can** | **€50** (FN): penalty, shipping and return handling | **€7.5** (TP): the cost of producing the can, now lost |
+| **Good can** | **€0** (TN): sold normally | **€15** (FP): the sale price the can would have earned |
+
+**The asymmetry.** What drives the decision is the gap between the two choices
+for each kind of can. Shipping a defective can instead of rejecting it costs
+€50 − €7.5 = **€42.5** more; rejecting a good can instead of shipping it costs
+**€15** more. A miss is therefore about **2.8× worse** than a false alarm.
+
+✍️ *Explain in your own words why a shipped defect is worse than a wasted good
+can for this business, and how that should push the threshold (lower = reject
+on weaker evidence).*
 
 ## Dataset
 
-*Workspace / project / version on Roboflow Universe, and the link. What one
-image represents, what the classes are, and why this dataset actually serves
-the problem above rather than merely resembling it.*
+- **Roboflow Universe:** workspace `canned-food-surface-defect-classification`,
+  project `canned-food-surface-defect`, **version 6** ("last version").
+- **Link:** https://universe.roboflow.com/canned-food-surface-defect-classification/canned-food-surface-defect/6
+- **License:** CC BY 4.0. Used as published, not forked.
+- **Task:** object detection, 4 classes: `Critical Defect`, `Major Defect`,
+  `Minor Defect`, `No defect`.
+- **What one image is:** one can photographed against a dark background, with
+  one bounding box around the can (or its defect) labelled with its severity.
+  So one image = one can = one ship/review/reject decision.
+- **Why version 6:** it is the full set of raw images. Versions 2–4 "isolate"
+  (crop) each object, which does not look like a camera on a line, and version
+  5 is ~3× augmented copies of the same images.
+
+✍️ *Why does this dataset actually serve the problem above? (It grades
+severity and includes good cans, so false rejects can be counted.) And where
+does it only resemble it?*
 
 ## What the dataset's composition implies
 
-*Instances per class, train/val/test sizes, typical object size relative to the
-image. Then the interpretation: which per-class numbers will be too thin to
-trust, whether the test split resembles the images you'd really see, and what
-you therefore can't conclude from your results.*
+**Instances per class and split** (`artifacts/dataset_stats.json`):
+
+| Class | Train | Valid | Test | Median box, % of image |
+|---|---|---|---|---|
+| Critical Defect | 1,406 | 401 | 202 | 21.6% |
+| Major Defect | 1,358 | 385 | 200 | 10.6% |
+| Minor Defect | 1,530 | 437 | 227 | 18.6% |
+| No defect | 1,364 | 386 | 199 | 14.7% |
+| **Images** | **5,658** | **1,609** | **829** | |
+
+- Exactly one labelled object per image; one test image has no label at all
+  and is counted as a good can.
+- Test split: **629 defective / 200 good cans = 76% defective.**
+- Objects are large (median 11–22% of the image), so small-object detection is
+  not the difficulty here.
+
+✍️ *Interpret it. Points to cover:*
+- *Classes are balanced (~200 test instances each): enough to trust per-class
+  recall to a few percentage points, but not more.*
+- *The test split is 76% defective; a real line is assumed to be 2%. Every
+  cost figure is therefore re-weighted to the 2% base rate rather than taken
+  from the raw test counts.*
+- *Only 200 good test cans: a single false reject moves the false-reject rate
+  by 0.5 points, and our cost result hinges on one such can (see below).*
+- *Lab photos of single cans, likely the same physical cans across splits:
+  the test split is easier than a production line, so treat the numbers as an
+  upper bound.*
 
 ## Finetuning and baselines
 
-*Which model and task (detection or classification) and why. A results table on
-the same test split: your finetuned model, the pretrained COCO model zero-shot,
-and a trivial baseline. What changed, and whether the gap is as large as you
-expected.*
+**Model:** `yolo11n` (detection), finetuned from the pretrained COCO
+checkpoint. Detection rather than classification because the dataset is
+labelled with boxes; the decision is made per can from the most confident
+defect box.
+
+**Training:** Google Colab, Tesla T4 GPU, 20 epochs, image size 640, batch 16,
+seed 0, early-stopping patience 15 (not triggered). 134 minutes. Settings are in
+`config.py`; the run's record is `artifacts/train_info.json`. Validation
+mAP50-95 was still rising at epoch 20 (0.699 → 0.795 → 0.863 → 0.892 → 0.906
+at epochs 1/5/10/15/20), so more epochs would likely help a little.
+
+**Results on the same 829-image test split:**
+
+| Model | mAP50 | mAP50-95 | AUC (defective vs good can) | Lowest expected cost, € / 1,000 cans |
+|---|---|---|---|---|
+| **Finetuned yolo11n** | **0.961** | **0.903** | **0.996** | **€223.50** (threshold 0.06) |
+| COCO yolo11n zero-shot | 0 | 0 | 0.549 | €971.62 |
+| Trivial: predict nothing (ship every can) | 0 | 0 | 0.500 | €1,000.00 |
+
+COCO has no defect classes, so its mAP on these classes is 0 by construction;
+its image-level score is "highest confidence of any COCO detection", which is
+barely better than chance (AUC 0.55).
+
+✍️ *Was the gap as large as you expected, and why?*
 
 ## Per-class evaluation and failure modes
 
-*Per-class AP50, or per-class precision/recall and the confusion matrix.
-Which class carries the headline number, which one is dragging, and what the
-model actually confuses with what. Show where it breaks, not just that it
-works.*
+**Positive class:** defective (Critical + Major + Minor).
+
+| Class | Precision | Recall | AP50 | AP50-95 | Test instances |
+|---|---|---|---|---|---|
+| Critical Defect | 0.971 | 1.000 | 0.990 | 0.946 | 202 |
+| Major Defect | 0.948 | 0.993 | 0.993 | 0.967 | 200 |
+| Minor Defect | 0.931 | 0.947 | 0.986 | 0.951 | 227 |
+| No defect | 0.952 | **0.734** | **0.874** | **0.746** | 199 |
+
+**Confusion between classes** (test split, rows = predicted, columns = true;
+`artifacts/confusion_matrix.png`):
+
+| Predicted ↓ / True → | Critical | Major | Minor | No defect |
+|---|---|---|---|---|
+| Critical | 202 | 1 | 2 | 0 |
+| Major | 0 | 198 | 7 | 0 |
+| Minor | 0 | 1 | 218 | 0 |
+| No defect | 0 | 0 | 0 | 199 |
+
+**At the can level** (highest defect score per can):
+- Lowest score of any defective can: **0.168**. So any threshold up to ~0.16
+  catches every defective can in the test split.
+- Good cans: 197 of 200 score below 0.06, but one good can
+  (`IMG_20220929_174528_jpg.rf.b89af3d9…`) scores **0.956**, a confident false
+  alarm.
+- The large "background" column in Ultralytics' confusion matrix comes from
+  counting every faint duplicate box at confidence 0.001; it is not the error
+  rate at our thresholds.
+- Fed random noise, the model reports a *Major Defect* at 0.79: it never says
+  "this is not a can".
+
+✍️ *Which class carries the headline number, which drags, and what the model
+confuses. Points to cover: "No defect" is the weakest class (recall 0.73);
+the severity mistakes are mostly over-grading (Minor → Major 7, Minor →
+Critical 2, Major → Critical 1) with one under-grade (Major → Minor 1); no
+defective can is ever called "No defect", so severity errors never ship a can. Look at the
+0.956 image and say why you think the model got it wrong.*
 
 ## Cost matrix and operating point
 
-*Your euro cost for each kind of error and where each figure came from. The
-base rate you assumed. The cost-against-threshold sweep, and the operating
-point you chose. State the assumption that would most change your answer if it
-were wrong.*
+**Figures** (see the business section for where each comes from): FN €50,
+FP €15, TP €7.5, TN €0. Human review costs 10 s × €25/h = **€0.069 per can**.
+
+**Base rate:** 2% of cans defective. Test-split rates are re-weighted to this,
+because the test split is 76% defective.
+
+**Floor:** at 2% defective and €7.5 per rejected defect, even a perfect decision
+costs **€150 per 1,000 cans**. The model only controls the cost above that.
+
+**Sweep, model deciding alone** (`artifacts/sweep_single.csv`,
+`artifacts/cost_curve.png`):
+
+| Threshold | € / 1,000 cans | Defects caught | Good cans rejected |
+|---|---|---|---|
+| **0.06 (minimum)** | **223.50** | 100% | 0.5% |
+| 0.30 | 230.26 | 99.2% | 0.5% |
+| 0.50 | 238.36 | 98.3% | 0.5% |
+| 0.90 | 369.45 | 82.8% | 0.5% |
+| 0.96 | 935.14 | 7.6% | 0.0% |
+
+**Sensitivity** (`artifacts/sensitivity.csv`): best threshold by miss cost and
+base rate.
+
+| Base rate | FN €10 | €25 | **€50** | €100 | €250 |
+|---|---|---|---|---|---|
+| 0.2% | 0.96 | 0.96 | 0.06 | 0.06 | 0.06 |
+| 0.5% – 2% | 0.96 | 0.06 | **0.06** | 0.06 | 0.06 |
+| 5% – 10% | 0.06 | 0.06 | 0.06 | 0.06 | 0.06 |
+
+**One cost for every defect grade.** A shipped Critical defect plausibly costs
+far more than €50. Raising the miss cost only lowers the best threshold, and
+0.06 is already the lowest threshold that catches every test defect, so pricing
+Critical higher would not change this operating point on this test split.
+
+✍️ *Your operating point and the assumption that would most change it. The
+table gives you the sentence: "if a shipped defect cost less than about €25
+(or €50 when defects are very rare), the best threshold jumps from 0.06 to 0.96
+and the line should let borderline cans ship". Also note that at 0.06 the miss
+cost is multiplied by zero misses, which is why €50 vs €100 does not move the
+numbers.*
 
 ## What a person still has to check
 
-*Your two thresholds, and what share of cases they send to a person. How many
-that is per day, how long one takes to check, and how many people that needs.
-Is that realistic? Then your design priced against the three alternatives:
-doing nothing, having a person check everything, and letting the model decide
-on its own.*
+**Chosen thresholds:** pass < **0.06** ≤ human review < **0.96** ≤ fail. This is
+the cheapest pair in the full two-threshold sweep (`artifacts/sweep_band.csv`)
+that the 2 available inspectors can staff.
+
+| | Per day (100,000 cans) |
+|---|---|
+| Share sent for review | **2.34%** |
+| Cans reviewed | **~2,340** |
+| Time per check | 10 s |
+| Inspector hours | ~6.5 h |
+| Inspectors needed (8 productive h each) | **0.81** of 2 available |
+
+**Priced against the alternatives** (€ per 1,000 cans; above the €150 floor in
+brackets):
+
+| Design | € / 1,000 cans | Inspectors |
+|---|---|---|
+| **Model + human review band (chosen)** | **151.62** (+1.62) | 0.81 |
+| Person checks everything | 219.44 (+69.44) | 34.7 |
+| Model decides alone (t = 0.06) | 223.50 (+73.50) | 0 |
+| Do nothing (ship every can) | 1,000.00 (+850) | 0 |
+
+**Where the band's saving comes from.** Holding the low edge at 0.06 and moving
+the high edge down: 0.96 → €151.62, 0.90 → €223.74, 0.50 → €223.52. The whole
+saving comes from sending the one confidently-wrong good can (0.956) to a person
+instead of rejecting it. Meanwhile 92% of defective cans fall inside the band,
+so most of the inspector's time goes on confirming defects the model already
+found.
+
+✍️ *Is ~1 inspector realistic for this line? Is a band whose upper edge is set
+by a single test image something you would ship as-is, or would you widen or
+re-check it on more data? Compare the four designs in your own words.*
 
 ## Limitations & next steps
 
-*Real limitations you found, and concretely how you'd address each one with
-more time or data. Not generic hedging.*
+✍️ *Write these yourself. Real ones found in this project:*
+- *The test split is easier than production: single cans, lab lighting, likely
+  the same physical cans in train and test.*
+- *The cost result rests on very few test errors (one false reject, zero
+  misses); the miss cost is untestable on this split.*
+- *The band's upper edge (0.96) is set by one image.*
+- *One miss cost for all severities.*
+- *The model has no "not a can" answer for unusual input.*
+- *Training stopped at 20 epochs while validation mAP was still rising.*
 
 ## Generative AI use disclosure
 
-*Per the syllabus AI Policy: what you used and how, or "no AI content used."*
+Claude (Anthropic) via Claude Code was used to write the code (`train.py`,
+`app.py`, `costing.py`, `config.py`), to debug the Colab run, and to fill this
+report's tables and facts from the pipeline's output files. The problem, the
+dataset version, the cost figures and the decision to reject Minor defects
+were my own choices.
+
+✍️ *Check this matches what you actually did, and add anything else.*
