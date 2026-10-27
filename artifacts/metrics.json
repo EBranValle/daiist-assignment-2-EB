@@ -117,7 +117,7 @@
       "recall_at_0.5": 0.9825119236883942,
       "precision_at_0.5": 0.9983844911147012,
       "best_threshold": 0.06,
-      "best_cost_per_1000": 1.96
+      "best_cost_per_1000": 223.49999999999997
     },
     "coco_zero_shot": {
       "map50": 0.0,
@@ -125,8 +125,8 @@
       "auc": 0.5494753577106518,
       "recall_at_0.5": 0.848966613672496,
       "precision_at_0.5": 0.7661406025824964,
-      "best_threshold": 0.04,
-      "best_cost_per_1000": 391.6298251192369
+      "best_threshold": 0.94,
+      "best_cost_per_1000": 971.6216216216217
     },
     "predict_nothing": {
       "map50": 0.0,

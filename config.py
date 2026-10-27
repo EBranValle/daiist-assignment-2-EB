@@ -4,9 +4,9 @@ Every choice the pipeline depends on, in one place.
 train.py and app.py both import this, so the dashboard always prices errors
 with the same figures the training run used.
 
-The cost and operating figures below are PLACEHOLDERS so the pipeline runs end
-to end. They are your decisions to make and defend in REPORT.md: replace each
-one with your own figure and write down where it came from.
+After changing a cost or operating figure, re-price without retraining:
+
+    RECOST_ONLY=1 uv run python main.py train
 """
 
 import os
@@ -40,13 +40,13 @@ BATCH = int(os.environ.get("BATCH", "16"))
 PATIENCE = 15
 SEED = 0
 
-# --- Cost matrix, in euros per can (PLACEHOLDERS) --------------------------
-COST_FP = 0.40   # good can rejected: the can and its contents are scrapped
-COST_FN = 50.0   # defective can shipped: complaint, return, share of a recall
-COST_TP = 0.0    # defective can rejected: lost either way, so no extra cost
-COST_TN = 0.0    # good can shipped: the normal case
+# --- Cost matrix, in euros per can -----------------------------------------
+COST_FP = 15.0   # good can rejected: the sale price the can would have earned
+COST_FN = 50.0   # defective can shipped: penalty, shipping, return and handling
+COST_TP = 7.5    # defective can rejected: the cost of producing it
+COST_TN = 0.0    # good can shipped: sold, so no loss
 
-# --- Operating assumptions (PLACEHOLDERS) ----------------------------------
+# --- Operating assumptions -------------------------------------------------
 BASE_RATE = 0.02            # share of cans on the line that are defective
 CANS_PER_DAY = 100_000      # line throughput
 REVIEW_SECONDS = 10         # time for a person to check one flagged can

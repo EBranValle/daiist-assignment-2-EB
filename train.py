@@ -314,7 +314,7 @@ def sensitivity(y_true: np.ndarray, scores: np.ndarray) -> pd.DataFrame:
     """How the best single threshold moves when the key assumptions move."""
     rows = []
     for base_rate in (0.002, 0.005, 0.01, 0.02, 0.05, 0.10):
-        for cost_fn in (5.0, 20.0, 50.0, 200.0, 1000.0):
+        for cost_fn in (10.0, 25.0, 50.0, 100.0, 250.0):
             sweep = costing.sweep_single(y_true, scores, base_rate, cost_fn)
             best = sweep.loc[sweep["cost_per_1000"].idxmin()]
             rows.append({
@@ -379,22 +379,6 @@ def main() -> None:
     pd.DataFrame({"image": [p.name for p in test_images], "defective": y_true, **scores}) \
         .to_csv(config.ARTIFACTS_DIR / "test_scores.csv", index=False)
 
-    baselines = {
-        "finetuned": {"map50": detection["map50"], "map50_95": detection["map50_95"]},
-        # No COCO class is a can defect, so it cannot match a single defect box.
-        "coco_zero_shot": {"map50": 0.0, "map50_95": 0.0},
-        "predict_nothing": {"map50": 0.0, "map50_95": 0.0},
-    }
-    for name, s in scores.items():
-        baselines[name].update(image_level(y_true, s))
-    print("\nTest split, all three models:\n" + pd.DataFrame(baselines).T.to_string())
-
-    operating = choose_operating_points(y_true, scores["finetuned"])
-    sensitivity(y_true, scores["finetuned"]).to_csv(
-        config.ARTIFACTS_DIR / "sensitivity.csv", index=False
-    )
-    plot_cost_curve(operating)
-
     metrics = {
         "dataset": {"workspace": config.WORKSPACE, "project": config.PROJECT,
                     "version": config.VERSION},
@@ -404,8 +388,28 @@ def main() -> None:
         "test_defective": int(y_true.sum()),
         "train": train_info,
         "detection": detection,
-        "baselines": baselines,
+        "baselines": {
+            "finetuned": {"map50": detection["map50"], "map50_95": detection["map50_95"]},
+            # No COCO class is a can defect, so it cannot match a single defect box.
+            "coco_zero_shot": {"map50": 0.0, "map50_95": 0.0},
+            "predict_nothing": {"map50": 0.0, "map50_95": 0.0},
+        },
     }
+    price(y_true, scores, metrics)
+
+
+def price(y_true: np.ndarray, scores: dict, metrics: dict) -> None:
+    """Steps 5-6: everything that depends on the cost figures in config.py."""
+    baselines = metrics["baselines"]
+    for name, s in scores.items():
+        baselines[name].update(image_level(y_true, s))
+    print("\nTest split, all three models:\n" + pd.DataFrame(baselines).T.to_string())
+
+    operating = choose_operating_points(y_true, scores["finetuned"])
+    sensitivity(y_true, scores["finetuned"]).to_csv(
+        config.ARTIFACTS_DIR / "sensitivity.csv", index=False
+    )
+    plot_cost_curve(operating)
     (config.ARTIFACTS_DIR / "metrics.json").write_text(json.dumps(metrics, indent=2))
     (config.ARTIFACTS_DIR / "operating_point.json").write_text(json.dumps(operating, indent=2))
 
@@ -418,5 +422,21 @@ def main() -> None:
     )
 
 
+def recost_only() -> None:
+    """Re-price the saved test-split scores after changing a figure in config.py.
+
+    Needs no dataset, model or GPU, so it runs anywhere in seconds.
+    """
+    table = pd.read_csv(config.ARTIFACTS_DIR / "test_scores.csv")
+    metrics = json.loads((config.ARTIFACTS_DIR / "metrics.json").read_text())
+    y_true = table["defective"].to_numpy(bool)
+    scores = {n: table[n].to_numpy(float) for n in metrics["baselines"]}
+    price(y_true, scores, metrics)
+
 if __name__ == "__main__":
-    main()
+    # RECOST_ONLY=1 skips data, training and evaluation and only re-runs the
+    # cost sweep on artifacts/test_scores.csv.
+    if os.environ.get("RECOST_ONLY") == "1":
+        recost_only()
+    else:
+        main()
