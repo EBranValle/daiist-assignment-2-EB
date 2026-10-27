@@ -202,20 +202,20 @@ instead of rejecting it. Meanwhile 92% of defective cans fall inside the band,
 so most of the inspector's time goes on confirming defects the model already
 found.
 
-One inspector is realistic since the review would take 6.5 hours a day. It would be good to not ship the band as it is because its upper edge depends on just one test image so its better to check it on more data first. Doing nothing is the worst option because every defect would ship increasing costs exponentially. The model alones is more cheaper but it can still reject some good cans, and checking it all by hand costs the sames as needing aroung 35 people. the model plus a small human revies is the cheapest options and the best choice. 
+One inspector is realistic since the review would take 6.5 hours a day. It would be good not to ship the band as it is because its upper edge depends on just one test image, so its better to check it on more data first. Doing nothing is the worst option because every defect would ship, increasing costs exponentially. The model alone is cheaper, but it can still reject some good cans, and checking it all by hand costs the same as needing around 35 people. The model plus a small human review is the cheapest option and the best choice. 
 
 
 ## Limitations & next steps
 
-✍️ *Write these yourself. Real ones found in this project:*
-- *The test split is easier than production: single cans, lab lighting, likely
-  the same physical cans in train and test.*
-- *The cost result rests on very few test errors (one false reject, zero
-  misses); the miss cost is untestable on this split.*
-- *The band's upper edge (0.96) is set by one image.*
-- *One miss cost for all severities.*
-- *The model has no "not a can" answer for unusual input.*
-- *Training stopped at 20 epochs while validation mAP was still rising.*
+- The test split is easier than production: single cans, lab lighting, likely
+  the same physical cans in train and test.
+- The cost result rests on very few test errors (one false reject, zero
+  misses); the miss cost is untestable on the split.
+- The band's upper edge (0.96) is set by one image.
+- One miss cost for all severities.
+- The model has no "not a can" answer for unusual input in case something would get into the production line.
+- Training stopped at 20 epochs while validation mAP was still rising. Training was also slow as it took alsmost 3 hours to run.
+- Computational power would have to be taken into account if the model is to be implemented since GPUs are expensive. 
 
 ## Generative AI use disclosure
 
