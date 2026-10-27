@@ -66,18 +66,9 @@ In the hypothetical case, shipping a defect would cost the company significantly
 - Test split: **629 defective / 200 good cans = 76% defective.**
 - Objects are large (median 11–22% of the image), so small-object detection is
   not the difficulty here.
-
-✍️ *Interpret it. Points to cover:*
-- *Classes are balanced (~200 test instances each): enough to trust per-class
-  recall to a few percentage points, but not more.*
-- *The test split is 76% defective; a real line is assumed to be 2%. Every
-  cost figure is therefore re-weighted to the 2% base rate rather than taken
-  from the raw test counts.*
-- *Only 200 good test cans: a single false reject moves the false-reject rate
-  by 0.5 points, and our cost result hinges on one such can (see below).*
-- *Lab photos of single cans, likely the same physical cans across splits:
-  the test split is easier than a production line, so treat the numbers as an
-  upper bound.*
+- Classes are balanced, as there are around 200 instances of each, which is enough to trust per-class recall to a few percentage points.
+- The test split is 76% defective; a real line is assumed to have a realistic amount of  defective cans of about 2%. Every cost figure is therefore re-weighted to the 2% base rate rather than taken from the raw test counts.
+- There are only 200 good test cans in the dataset; a single false reject moves the false positive rate by 0.5%.
 
 ## Finetuning and baselines
 
