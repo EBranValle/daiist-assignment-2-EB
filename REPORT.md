@@ -1,9 +1,5 @@
 # Assignment 2 Report
 
-> **✍️ = write this part in your own words.** Everything else is facts and
-> numbers taken from the pipeline's outputs in `artifacts/`. Delete these
-> markers before submitting.
-
 - **Name**: Edgar Andres Bran Valle
 - **Student ID**: 18789
 - **Email**: ebran.ieu2022@student.ie.edu 
@@ -47,13 +43,14 @@ on weaker evidence).*
 - **License:** CC BY 4.0. Used as published, not forked.
 - **Task:** object detection, 4 classes: `Critical Defect`, `Major Defect`,
   `Minor Defect`, `No defect`.
-- **What one image is:** one can photographed against a dark background, with
-  one bounding box around the can (or its defect) labelled with its severity.
-  So one image = one can = one ship/review/reject decision.
+- **What one image is:** 
+  A photograph of a can against a dark background with a bounding box over it or its defect.¡, labeled with the level of severity. One image equals one can that equals on ship/Review/reject decision. 
 - **Why version 6:** it is the full set of raw images. Versions 2–4 "isolate"
   (crop) each object, which does not look like a camera on a line, and version
   5 is ~3× augmented copies of the same images.
-
+ - **Why the Dataset **
+   The dataset has a large amount of available images (8,096 images with 829 in the test split and 200 per class) to create a solution to the problem above. With the dataset, the model is able to grade the severity of damage and good cans for the hypothetical business case of a premium canned food manufacturing plant. However, it differs from a real manufacturing plant as the images are on a dark background and the cans are all standardized, instead of being, for example, on a conveyor belt. 
+   
 ✍️ *Why does this dataset actually serve the problem above? (It grades
 severity and includes good cans, so false rejects can be counted.) And where
 does it only resemble it?*
