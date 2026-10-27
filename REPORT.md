@@ -95,7 +95,7 @@ COCO has no defect classes, so its mAP on these classes is 0 by construction;
 its image-level score is "highest confidence of any COCO detection", which is
 barely better than chance (AUC 0.55).
 
-✍️ *Was the gap as large as you expected, and why?*
+The gap is large and expected. The COCO model was never trained on defects, so it doesn't have classes for them, and the scores ended up close to random guessing since the AUC is low. The fine-tuned model learned exactly what defects look like from the labelled boxes, which allowed it to separate the good and defective cans almost perfectly with an AUC of 0.996. This cut the expected costs from about 972 euros to 223 euros per 1000 cans. 
 
 ## Per-class evaluation and failure modes
 
