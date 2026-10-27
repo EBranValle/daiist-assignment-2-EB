@@ -4,10 +4,10 @@
 > numbers taken from the pipeline's outputs in `artifacts/`. Delete these
 > markers before submitting.
 
-- **Name**:
-- **Student ID**:
-- **Email**:
-- **Group**: [BBADBA 5A | BBADBA 5B | PPLEDBA 5A | BDBA 3A]
+- **Name**: Edgar Andres Bran Valle
+- **Student ID**: 18789
+- **Email**: ebran.ieu2022@student.ie.edu 
+- **Group**:  BBADBA 5B 
 
 ## Business problem, and the cost of being wrong
 
