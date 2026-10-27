@@ -130,12 +130,7 @@ The gap is large and expected. The COCO model was never trained on defects, so i
 - Fed random noise, the model reports a *Major Defect* at 0.79: it never says
   "this is not a can".
 
-✍️ *Which class carries the headline number, which drags, and what the model
-confuses. Points to cover: "No defect" is the weakest class (recall 0.73);
-the severity mistakes are mostly over-grading (Minor → Major 7, Minor →
-Critical 2, Major → Critical 1) with one under-grade (Major → Minor 1); no
-defective can is ever called "No defect", so severity errors never ship a can. Look at the
-0.956 image and say why you think the model got it wrong.*
+The headline number comes from the defect clses wich all score very high, with Critical Defect being the strongest. the model catches every critical can. "No defect" is the weak class so the model often misses or poorly places the box for a good can, but this dosent really matter. Most mistaked between classes are from over grading, Minor was called Major 7 times and Critical 2 times, and Major was called Critical once. There was only one under-grade (Major called Minor). No defective can is ever predicted as “No defect,” so a severity mistake can change how a can is classified but never lets a defective can ship.
 
 ## Cost matrix and operating point
 
@@ -233,6 +228,5 @@ Claude (Anthropic) via Claude Code was used to write the code (`train.py`,
 `app.py`, `costing.py`, `config.py`), to debug the Colab run, and to fill this
 report's tables and facts from the pipeline's output files. The problem, the
 dataset version, the cost figures and the decision to reject Minor defects
-were my own choices.
+were my own choices. The report apart from the factual data was also done on my part. The model was also trained by me on a Colab Notebook using a T4 GPU runtime
 
-✍️ *Check this matches what you actually did, and add anything else.*
