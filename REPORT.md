@@ -31,7 +31,7 @@ for each kind of can. Shipping a defective can instead of rejecting it costs
 €50 − €7.5 = **€42.5** more; rejecting a good can instead of shipping it costs
 **€15** more. A miss is therefore about **2.8× worse** than a false alarm.
 
-In the hypothetical case, shipping a defect would cost the company significantly more, since it could incur penalties and shipping and return shipping costs. This is considerably less expensive than a wasted good, since only the hypothetical cost of production would be less than the costs mentioned before. For this reason, even if a defect is considered minor, it should be rejected to avoid the 50 euros cost and to align with the company's hypothetical premium can and reputational standards. Because a miss costs more than a false alarm, the model should reject cans on weak evidence, meaning a low confidence threshold.
+In the hypothetical case, shipping a defect would cost the company significantly more, since it could incur penalties and shipping and return shipping costs. This is considerably more than a wasted good can cost, since rejecting a good can only lose its €15 sale price. For this reason, even if a defect is considered minor, it should be rejected to avoid the 50 euros cost and to align with the company's hypothetical premium can and reputational standards. Because a miss costs more than a false alarm, the model should reject cans on weak evidence, meaning a low confidence threshold.
 
 ## Dataset
 
@@ -42,7 +42,7 @@ In the hypothetical case, shipping a defect would cost the company significantly
 - **Task:** object detection, 4 classes: `Critical Defect`, `Major Defect`,
   `Minor Defect`, `No defect`.
 - **What one image is:** 
-  A photograph of a can against a dark background with a bounding box over it or its defect.¡, labeled with the level of severity. One image equals one can that equals on ship/Review/reject decision. 
+ A photograph of a can with a bounding box over it or its defect, labelled with the level of severity. One image equals one can, which equals one ship/review/reject decision.
 - **Why version 6:** it is the full set of raw images. Versions 2–4 "isolate"
   (crop) each object, which does not look like a camera on a line, and version
   5 is ~3× augmented copies of the same images.
