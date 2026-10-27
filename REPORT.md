@@ -216,4 +216,4 @@ One inspector is realistic, since the review would take about 6.5 hours a day, w
 
 ## Generative AI use disclosure
 
-Claude (Anthropic) via Claude Code was used to write the code (`train.py`, `app.py`, `costing.py`, `config.py`), to debug the Colab run, and to fill this report's tables and facts from the pipeline's output files. It also suggested the premium-product framing, drafted some interpretive paragraphs and the limitations list (which I reviewed and edited), and gave feedback and grammar corrections on my writing. The problem, the dataset version, the cost figures and the decision to reject Minor defects were my own choices. I trained the model myself on a Colab notebook with a T4 GPU.
+Claude (Anthropic) via Claude Code was used to write the code (`train.py`, `app.py`, `costing.py`, `config.py`), to debug the Colab run, and to create this report's tables and facts from the pipeline's output files. It also suggested and gave feedback and grammar corrections on my writing. The problem, the dataset version, the cost figures and the decision to reject Minor defects were my own choices. I trained the model myself on a Colab notebook with a T4 GPU.
